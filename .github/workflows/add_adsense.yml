@@ -1,4 +1,4 @@
-name: Manual Automate Adsense Script Addition
+name: Manual Adsense Script Addition
 
 on:
   workflow_dispatch:
