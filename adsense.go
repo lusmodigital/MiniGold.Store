@@ -10,7 +10,7 @@ import (
 
 const (
 	adsenseScript = `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3534718780470570" crossorigin="anonymous"></script>`
-	checkedHTML   = "checked_html.txt"
+	checkedHTML   = "checked-html.txt"
 )
 
 func main() {
@@ -82,21 +82,28 @@ func appendAdsenseScript(content []byte) []byte {
 
 // Function to load checked HTML files from the record
 func loadCheckedHTML() []string {
-	var checked []string
+    var checked []string
 
-	// Check if the record file exists
-	if _, err := os.Stat(checkedHTML); err == nil {
-		// Read checked HTML files from the record
-		data, err := ioutil.ReadFile(checkedHTML)
-		if err != nil {
-			fmt.Println("Error reading record file:", err)
-			return checked
-		}
+    // Check if the record file exists
+    if _, err := os.Stat(checkedHTML); err == nil {
+        // Read checked HTML files from the record
+        data, err := ioutil.ReadFile(checkedHTML)
+        if err != nil {
+            fmt.Println("Error reading record file:", err)
+            return checked
+        }
 
-		checked = strings.Split(string(data), "\n")
-	}
+        checked = strings.Split(string(data), "\n")
+    } else if os.IsNotExist(err) {
+        // If the record file doesn't exist, create it
+        if _, err := os.Create(checkedHTML); err != nil {
+            fmt.Println("Error creating record file:", err)
+        }
+    } else {
+        fmt.Println("Error accessing record file:", err)
+    }
 
-	return checked
+    return checked
 }
 
 // Function to record checked HTML files
