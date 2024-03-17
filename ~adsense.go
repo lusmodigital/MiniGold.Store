@@ -10,7 +10,7 @@ import (
 
 const (
 	adsenseScript = `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3534718780470570" crossorigin="anonymous"></script>`
-	checkedHTML   = "-checked-html.txt"
+	checkedHTML   = "~checked-html.txt"
 )
 
 func main() {
