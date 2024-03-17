@@ -20,25 +20,21 @@ jobs:
         run: go run adsense.go
 
       - name: Get Date
-        id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+        run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_STATE
 
       - name: Check for Changes
-        id: git_changes
         run: |
-          git diff --exit-code || echo "::set-output name=changes::true"
+          git diff --exit-code || echo "CHANGES=true" >> $GITHUB_STATE
 
       - name: Commit and Push Changes
-        if: steps.git_changes.outputs.changes == 'true'
+        if: env.CHANGES == 'true'
         run: |
           git config --global user.email "github-actions@github.com"
           git config --global user.name "GitHub Actions"
           git add .
-          git commit -m "Add Google Adsense script on ${DATE}"
+          git commit -m "Add Google Adsense script on $DATE"
           git push
-        env:
-          DATE: ${{ steps.date.outputs.date }}
 
       - name: Display Message if Nothing Changed
-        if: steps.git_changes.outputs.changes != 'true'
+        if: env.CHANGES != 'true'
         run: echo "Nothing changed, nothing to commit"
