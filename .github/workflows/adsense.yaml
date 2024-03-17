@@ -29,15 +29,15 @@ jobs:
           git diff --exit-code || echo "::set-output name=changes::true"
 
       - name: Commit and Push Changes
+        if: steps.git_changes.outputs.changes == 'true'
         run: |
           git config --global user.email "github-actions@github.com"
           git config --global user.name "GitHub Actions"
           git add .
-          git diff --cached --quiet || git commit -m "Add Google Adsense script on ${DATE}"
+          git commit -m "Add Google Adsense script on ${DATE}"
           git push
         env:
           DATE: ${{ steps.date.outputs.date }}
-      continue-on-error: true
 
       - name: Display Message if Nothing Changed
         if: steps.git_changes.outputs.changes != 'true'
