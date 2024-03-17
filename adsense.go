@@ -10,7 +10,7 @@ import (
 
 const (
 	adsenseScript = `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3534718780470570" crossorigin="anonymous"></script>`
-	checkedHTML   = "checked-html.txt"
+	checkedHTML   = "-checked-html.txt"
 )
 
 func main() {
@@ -73,11 +73,17 @@ func appendAdsenseScript(content []byte) []byte {
 	headIndex := strings.LastIndex(string(content), "</head>")
 	if headIndex == -1 {
 		// If </head> tag not found, append script to end of file
-		return append(content, []byte(adsenseScript)...)
+		return append(content, []byte("\n"+adsenseScript)...)
+	}
+
+	// If Adsense script is on the same line as </head>, insert on a new line
+	if strings.Contains(string(content[headIndex:]), adsenseScript) {
+		headIndex = strings.Index(string(content[headIndex:]), adsenseScript)
+		return []byte(string(content[:headIndex]) + "\n" + adsenseScript + string(content[headIndex:]))
 	}
 
 	// Insert script before </head> tag
-	return []byte(string(content[:headIndex]) + adsenseScript + string(content[headIndex:]))
+	return []byte(string(content[:headIndex]) + "\n" + adsenseScript + string(content[headIndex:]))
 }
 
 // Function to load checked HTML files from the record
